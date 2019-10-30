@@ -23,7 +23,7 @@ public class CustomerDaoImpl implements CustomerDao{
 
 	public Customer getCustomerByName(String name)
 	{
-		String sql = "SELECT * FROM customer WHERE customer.name = (?)";
+		String sql = "SELECT * FROM customer WHERE customer.name = ?";
 		Customer customer = 
 		jdbcTemplate.queryForObject(sql, new CustomerRowMapper(), name);
 		return customer;

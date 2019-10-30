@@ -1,19 +1,18 @@
-package ie.adamdevenyi.dao;
+package ie.adamdevenyi.service;
 
 import java.util.List;
 
 import ie.adamdevenyi.domain.Account;
 
-public interface AccountDao {
+public interface AccountService {
 
-	void createAccount(int amount);
+	void createAccount(int amount, int customerId);
 	void addCustomerToAccount(int customerId, int accountId);
 	List<Account> viewMyAccounts(int customerId);
 	int getCurrentBalance(int accountId);
 	void setBalance(int accountId, int amount);
 	void deposite(int accountId, int amount);
 	void transfer(int sendAccountId, int getAccountId, int amount);
-	void deleteConnection(int accountId);
 	void closeAccount(int accountId);
 	int recentAccount();
 }
