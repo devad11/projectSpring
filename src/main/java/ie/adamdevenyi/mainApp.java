@@ -37,16 +37,23 @@ public class mainApp {
 				"2: create a new account\r\n" + 
 				"3: add a person to an account\r\n" + 
 				"4: view his/her own accounts\r\n" + 
-				"5: withdraw money from his/her account (subject to an overdraft limit)\r\n" + 
+				"5: withdraw money from his/her account\r\n" + 
 				"6: deposit money into his/her account\r\n" + 
 				"7: transfer money from one account to another\r\n" + 
 				"8: close an account\r\n" +
-				"9: Quit" );
+				"9:  get total deposite\r\n" +
+				"10: the number of accounts with deposits over €10,000\r\n" +
+				"11: Quit" );
 		System.out.println("Press number for option: ");
 		
 		int choice;
         Scanner scan = new Scanner(System.in);
         do {
+        	while (!scan.hasNextInt()) {
+                System.out.println("\nThat's not a number!\n");
+                scan.next();
+                menu(context);
+        	}
             choice = scan.nextInt();
             switch (choice) {
             case 1:
@@ -62,14 +69,19 @@ public class mainApp {
             	name = scan.next();
             	System.out.println("Enter amount: ");
             	int amount = scan.nextInt();
+            	System.out.println("Enter overdraft: ");
+            	int overdraft = scan.nextInt();
             	
             	customer = customerService.getCustomerByName(name);
-            	customerId = customer.getCustomerId();
-            	accountService.createAccount(amount, customerId);
             	
-            	myAccounts = accountService.viewMyAccounts(customerId);
-            	System.out.println("Your accounts: ");
-            	System.out.println(myAccounts.toString() + "\n");
+            	if (customer != null) {
+	            	customerId = customer.getCustomerId();
+	            	accountService.createAccount(amount, overdraft, customerId);
+	            	
+	            	myAccounts = accountService.viewMyAccounts(customerId);
+	            	System.out.println("Your accounts: ");
+	            	System.out.println(myAccounts.toString() + "\n");
+            	}
             	
             	menu(context);
             	break;
@@ -80,10 +92,11 @@ public class mainApp {
             	System.out.println("Enter account id: ");
             	accountId = scan.nextInt();
             	customer = customerService.getCustomerByName(name);
-            	customerId = customer.getCustomerId();
-            	
-            	accountService.addCustomerToAccount(customerId, accountId);
-            	
+            	if (customer != null) {
+	            	customerId = customer.getCustomerId();
+	            	
+	            	accountService.addCustomerToAccount(customerId, accountId);
+            	}
             	menu(context);
             	break;
             
@@ -91,37 +104,45 @@ public class mainApp {
             	System.out.println("Enter your name: ");
             	name = scan.next();
             	customer = customerService.getCustomerByName(name);
-            	customerId = customer.getCustomerId();
-            	myAccounts = accountService.viewMyAccounts(customerId);
-            	System.out.println(myAccounts.toString());
+            	if (customer != null) {
+	            	customerId = customer.getCustomerId();
+	            	myAccounts = accountService.viewMyAccounts(customerId);
+	            	System.out.println(myAccounts.toString());
+            	}
             	
             	menu(context);
             	break;
             
             case 5:
             	System.out.println("Enter account id: ");
+            	while (!scan.hasNextInt()) {
+                    System.out.println("\nThat's not a number!\n");
+                    scan.next();
+            	}
             	accountId = scan.nextInt();
-            	int balance = accountService.getCurrentBalance(accountId);
-            	System.out.println("Your balance is: " + balance);
             	System.out.println("Enter amount to withdraw: ");
+            	while (!scan.hasNextInt()) {
+                    System.out.println("\nThat's not a number!\n");
+                    scan.next();
+            	}
             	int withdraw = scan.nextInt();
-            	int newBalance = balance - withdraw;
-            	accountService.setBalance(accountId, newBalance);
-            	balance = accountService.getCurrentBalance(accountId);
-            	System.out.println("Your balance is: " + balance);
+            	accountService.withdraw(accountId, withdraw);
+            	int balance = accountService.getCurrentBalance(accountId);
+            	System.out.println("Your balance is: " + balance + "\n");
             	
             	menu(context);
             	break;
             case 6:
             	System.out.println("Enter account id: ");
             	accountId = scan.nextInt();
-            	int balanceAdd = accountService.getCurrentBalance(accountId);
-            	System.out.println("Your balance is: " + balanceAdd);
             	System.out.println("Enter amount to deposite: ");
+            	while (!scan.hasNextInt()) {
+                    System.out.println("\nThat's not a number!\n");
+                    scan.next();
+            	}
             	int deposite = scan.nextInt();
-            	int nBalance = balanceAdd + deposite;
-            	accountService.setBalance(accountId, nBalance);
-            	balanceAdd = accountService.getCurrentBalance(accountId);
+            	accountService.deposite(accountId, deposite);    	
+            	int balanceAdd = accountService.getCurrentBalance(accountId);
             	System.out.println("Your balance is: " + balanceAdd);
             	
             	menu(context);      
@@ -141,7 +162,7 @@ public class mainApp {
             	System.out.println("Your balance is: " + balance);
             	
             	balance = accountService.getCurrentBalance(recAccountId);
-            	System.out.println("Your balance is: " + balance);
+            	System.out.println("Reciever's balance is: " + balance);
             	
             	menu(context);
             	break;
@@ -154,8 +175,31 @@ public class mainApp {
             	menu(context);
             	break;
             	
+            case 9:
+            	System.out.println("total deposite: " + accountService.getTotalDeposite());
+            	
+            	menu(context);
+            	break;
+            
+            case 10:
+            	List<Account> richAcounts = accountService.richAcounts();
+            	for(Account account: richAcounts) {
+            		System.out.println(account.toString());
+            	}
+            	
+            	menu(context);
+            	break;
+            	
+            case 11:
+            	System.out.println("Goodbye");
+            	break;
+            	
+            default:
+            	System.out.println("\nWrong input!\n");
+            	menu(context);
+            	
             } // end of switch
-        } while (choice != 9);
+        } while (choice != 0);
 		
         scan.close();
 	}

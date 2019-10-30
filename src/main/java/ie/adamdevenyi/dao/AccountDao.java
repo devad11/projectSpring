@@ -6,8 +6,9 @@ import ie.adamdevenyi.domain.Account;
 
 public interface AccountDao {
 
-	void createAccount(int amount);
+	void createAccount(int amount, int overdraft);
 	void addCustomerToAccount(int customerId, int accountId);
+	List<Account> ListAllAccounts();
 	List<Account> viewMyAccounts(int customerId);
 	int getCurrentBalance(int accountId);
 	void setBalance(int accountId, int amount);

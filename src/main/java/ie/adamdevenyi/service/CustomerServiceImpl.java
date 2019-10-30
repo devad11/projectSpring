@@ -16,18 +16,32 @@ public class CustomerServiceImpl implements CustomerService{
 	
 
 	public void insertCustomer(String name) {
-		customerDao.insertCustomer(name);
+		
+		if ((!name.equals("")) && (name != null)  && (name.matches("^[a-zA-Z]*$"))) {
+			customerDao.insertCustomer(name);
+		}
+		else {
+			System.out.println("Wrong input! Please try again.\n");
+		}
+		
 	}
 
 
 	public Customer getCustomerByName(String name) {
-		// TODO Auto-generated method stub
-		return customerDao.getCustomerByName(name);
+		List<Customer> customers = customerDao.findAll();
+		for(Customer customer : customers) {
+			if (customer.getName().equals(name)){
+				return customerDao.getCustomerByName(name);
+			}
+		}
+		System.out.println("No customer found with this name! Please try again.\n");
+		return null;
+		
 	}
 
 
 	public List<Customer> findAll() {
-		// TODO Auto-generated method stub
+		
 		return customerDao.findAll();
 	}
 

@@ -1,6 +1,7 @@
 CREATE TABLE account (
 accountId int(11) NOT NULL AUTO_INCREMENT,
 balance int(15) NOT NULL,
+overdraft int(15) NOT NULL,
 PRIMARY KEY (accountId)
 );
 

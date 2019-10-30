@@ -15,10 +15,10 @@ public class AccountDaoImpl implements AccountDao{
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 	
-	public void createAccount(int amount) {
+	public void createAccount(int amount, int overdraft) {
 
-		String sql = "INSERT INTO account (balance) VALUES (?)";
-		jdbcTemplate.update(sql, amount);
+		String sql = "INSERT INTO account (balance, overdraft) VALUES (?,?)";
+		jdbcTemplate.update(sql, amount, overdraft);
 		
 	}
 
@@ -27,6 +27,14 @@ public class AccountDaoImpl implements AccountDao{
 		String sql = "INSERT INTO account_owners(accountId, customerId) VALUES (?, ?)";
 		jdbcTemplate.update(sql, accountId, customerId);
 		
+	}
+	
+	public List<Account> ListAllAccounts(){
+		
+		String sql = "SELECT * FROM account";
+		List<Account> accounts = 
+		jdbcTemplate.query(sql, new AccountRowMapper());
+		return accounts;
 	}
 
 	public List<Account> viewMyAccounts(int customerId) {

@@ -30,8 +30,10 @@ public class CustomerDaoImpl implements CustomerDao{
 	}
 
 	public List<Customer> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "SELECT * FROM customer";
+		List<Customer> customers = 
+		jdbcTemplate.query(sql, new CustomerRowMapper());
+		return customers;
 	}
 
 }
